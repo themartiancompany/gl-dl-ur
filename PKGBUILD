@@ -40,18 +40,22 @@ if [[ ! -v "_evmfs" ]]; then
     _evmfs="false"
   fi
 fi
+_os="$( \
+  uname \
+    -o)"
 _offline="false"
 _git="false"
 _solc="true"
 _hardhat="true"
 _py="python"
-_pkg=solidity-compiler
+_pkg=gl-dl
 pkgname="${_pkg}"
 pkgver="0.0.0.0.0.0.0.0.0.0.1"
 _commit="e727fc422b5aa1d8dc5fda60d9078dc81c2581c4"
 pkgrel=1
 _pkgdesc=(
-  "Solidity compiler supporting multiple backends."
+  "Downloads a resource from a GitLab instance"
+  "using an authentication token if present."
 )
 pkgdesc="${_pkgdesc[*]}"
 arch=(
@@ -64,42 +68,10 @@ license=(
   'AGPL3'
 )
 depends=(
+  "curl"
   "libcrash-bash"
-  "sed"
 )
 optdepends=()
-_os="$( \
-  uname \
-    -o)"
-if [[ "${_hardhat}" == "true" ]]; then
-  depends+=(
-    "indent"
-    "solidity-analyzer"
-    "hardhat"
-  )
-  if [[ "${_os}" == "GNU/Linux" ]] && \
-     [[ "${_os}" != "Android" ]]; then
-    depends+=(
-      'findutils'
-      'cpio'
-      'eslint-plugin-hardhat-internal-rules'
-      'eslint-plugin-slow-imports'
-    )
-  fi
-elif [[ "${_hardhat}" == "false" ]]; then
-  optdepends+=(
-    "hardhat: hardhat backend support"
-  )
-fi
-if [[ "${_solc}" == "true" ]]; then
-  depends+=(
-    "solidity"
-  )
-elif [[ "${_solc}" == "false" ]]; then
-  optdepends+=(
-    "solidity: solc backend support"
-  )
-fi
 if [[ "${_os}" != "GNU/Linux" ]] && \
    [[ "${_os}" == "Android" ]]; then
   depends+=(
@@ -108,7 +80,6 @@ if [[ "${_os}" != "GNU/Linux" ]] && \
   )
 fi
 optdepends+=(
-  "solidity<ver>: support for solc version <ver> in the correspondent backend"
 )
 makedepends=(
   'make'
@@ -124,13 +95,13 @@ _tarname="${pkgname}-${_tag}"
 if [[ "${_offline}" == "true" ]]; then
   _url="file://${HOME}/${pkgname}"
 fi
+_archive_sum='f4c028a9f7afe6e00a54053a49f1718aa2ed827a82f8c3af98203d1ed4e2a6a1'
+_archive_sig_sum="e5de38eaf599383800dd29a7b0e7f09b52b315410e9b555d8b1fd8417270c90b"
 _evmfs_network="100"
 _evmfs_address="0x69470b18f8b8b5f92b48f6199dcb147b4be96571"
 _evmfs_ns="0x87003Bd6C074C713783df04f36517451fF34CBEf"
-_archive_sum='f4c028a9f7afe6e00a54053a49f1718aa2ed827a82f8c3af98203d1ed4e2a6a1'
 _evmfs_archive_uri="evmfs://${_evmfs_network}/${_evmfs_address}/${_evmfs_ns}/${_archive_sum}"
 _evmfs_archive_src="${_tarname}.zip::${_evmfs_archive_uri}"
-_archive_sig_sum="e5de38eaf599383800dd29a7b0e7f09b52b315410e9b555d8b1fd8417270c90b"
 _archive_sig_uri="evmfs://${_evmfs_network}/${_evmfs_address}/${_evmfs_ns}/${_archive_sig_sum}"
 _archive_sig_src="${_tarname}.zip.sig::${_archive_sig_uri}"
 if [[ "${_evmfs}" == "true" ]]; then
