@@ -50,7 +50,7 @@ _hardhat="true"
 _py="python"
 _pkg=gl-dl
 pkgname="${_pkg}"
-pkgver="0.0.0.0.0.0.0.0.0.0.0.0.1.1.1"
+pkgver="0.0.0.0.0.0.0.0.0.0.0.0.1.1.1.1"
 _commit="2355d99325a85c677bf7b24f34f7b92c5c8b8f1b"
 pkgrel=1
 _pkgdesc=(
@@ -122,13 +122,15 @@ elif [[ "${_git}" == true ]]; then
   )
   _src="${_tarname}::git+${_url}#${_tag_name}=${_tag}?signed"
   _sum="SKIP"
-elif [[ "${_git}" == false ]]; then
-  if [[ "${_tag_name}" == 'pkgver' ]]; then
-    _src="${_tarname}.tar.gz::${_url}/archive/refs/tags/${_tag}.tar.gz"
-    _sum="d4f4179c6e4ce1702c5fe6af132669e8ec4d0378428f69518f2926b969663a91"
-  elif [[ "${_tag_name}" == "commit" ]]; then
-    _src="${_tarname}.zip::${_url}/archive/${_commit}.zip"
-    _sum="${_archive_sum}"
+elif [[ "${_evmfs}" == "false" ]]; then
+  if [[ "${_git}" == false ]]; then
+    if [[ "${_tag_name}" == 'pkgver' ]]; then
+      _src="${_tarname}.tar.gz::${_url}/archive/refs/tags/${_tag}.tar.gz"
+      _sum="d4f4179c6e4ce1702c5fe6af132669e8ec4d0378428f69518f2926b969663a91"
+    elif [[ "${_tag_name}" == "commit" ]]; then
+      _src="${_tarname}.zip::${_url}/archive/${_commit}.zip"
+      _sum="${_archive_sum}"
+    fi
   fi
 fi
 source=(
