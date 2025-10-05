@@ -108,9 +108,9 @@ stages:
         700 \
         "/home/user"
       cp \
-        -vr \
-        "/builds/themartiancompany/gl-dl-ur" \
-        "/home/user/gl-dl"
+        -r \
+        "/builds/themartiancompany/${CI_PROJECT_NAME}" \
+        "/home/user/${CI_PROJECT_NAME%-ur}"
       chown \
         -R \
         "user:user" \
