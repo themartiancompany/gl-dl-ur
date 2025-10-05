@@ -111,25 +111,27 @@ _evmfs_archive_src="${_tarname}.tar.gz::${_evmfs_archive_uri}"
 _archive_sig_uri="evmfs://${_evmfs_network}/${_evmfs_address}/${_evmfs_ns}/${_archive_sig_sum}"
 _archive_sig_src="${_tarname}.tar.gz.sig::${_archive_sig_uri}"
 if [[ "${_evmfs}" == "true" ]]; then
-  makedepends+=(
-    "evmfs"
-  )
-  _src="${_evmfs_archive_src}"
-  _sum="${_archive_sum}"
-  source+=(
-    "${_archive_sig_src}"
-  )
-  sha256sums+=(
-    "${_archive_sig_sum}"
-  )
-elif [[ "${_git}" == true ]]; then
-  makedepends+=(
-    "git"
-  )
-  _src="${_tarname}::git+${_url}#${_tag_name}=${_tag}?signed"
-  _sum="SKIP"
+  if [[ "${_git}" == "false" ]]; then
+    makedepends+=(
+      "evmfs"
+    )
+    _src="${_evmfs_archive_src}"
+    _sum="${_archive_sum}"
+    source+=(
+      "${_archive_sig_src}"
+    )
+    sha256sums+=(
+      "${_archive_sig_sum}"
+    )
+  fi
 elif [[ "${_evmfs}" == "false" ]]; then
-  if [[ "${_git}" == false ]]; then
+  if [[ "${_git}" == true ]]; then
+    makedepends+=(
+      "git"
+    )
+    _src="${_tarname}::git+${_url}#${_tag_name}=${_tag}?signed"
+    _sum="SKIP"
+  elif [[ "${_git}" == false ]]; then
     if [[ "${_tag_name}" == 'pkgver' ]]; then
       _src="${_tarname}.tar.gz::${_url}/archive/refs/tags/${_tag}.tar.gz"
       _sum="d4f4179c6e4ce1702c5fe6af132669e8ec4d0378428f69518f2926b969663a91"
