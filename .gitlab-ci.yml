@@ -120,7 +120,7 @@ stages:
   stage: build
   artifacts:
     paths:
-      - /home/user/${CI_PROJECT_NAME%-ur}/dogeos-gnu-*.pkg.tar.*
+      - dogeos-gnu-*.pkg.tar.*
   # tags:
   #   - vm
 

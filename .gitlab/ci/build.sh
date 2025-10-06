@@ -151,7 +151,7 @@ _build() {
     in "/home/user/${_pkgname}/"*".pkg.tar."*; do
     mv \
       "${_file}" \
-      "/home/user/${_pkgname}/dogeos-gnu-$( \
+      "dogeos-gnu-$( \
         basename \
           "${_file}")"
   done
