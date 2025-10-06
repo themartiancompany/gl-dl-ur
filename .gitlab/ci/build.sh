@@ -147,6 +147,12 @@ _build() {
     -U \
     --noconfirm \
     "/home/user/${_pkgname}/"*".pkg.tar."*
+  for _file \
+    in "/home/user/${_pkgname}/"*".pkg.tar."*; do
+    mv \
+      "${_file}" \
+      "/home/user/${_pkgname}/dogeos-gnu-${_file}"
+  done
   gl-dl \
     -v \
     -h
