@@ -155,6 +155,13 @@ _build() {
         basename \
           "${_file}")"
   done
+  for _file \
+    in "./"*".pkg.tar."*; do
+    gpg \
+      --sign \
+      --detach-sign \
+      "${_file}"
+  done
   ls
   gl-dl \
     -v \

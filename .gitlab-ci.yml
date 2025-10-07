@@ -83,6 +83,7 @@ stages:
         --noconfirm \
           asciidoctor \
           fakeroot \
+          gnupg \
           make \
           shellcheck \
           shfmt
@@ -96,6 +97,12 @@ stages:
       echo \
         "${GL_DL_PRIVATE_TOKEN}" > \
         "/root/.config/gitlab.com/default.txt"
+      echo \
+        "${BUR_GPG_KEY}" > \
+        "/root/bur.asc"
+      gpg \
+        --import \
+          "/root/bur.asc"
 
     # Setup user
     - >
