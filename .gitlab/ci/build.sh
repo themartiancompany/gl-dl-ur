@@ -169,8 +169,22 @@ _gl_dl_mini() {
     _ns="${1}" \
     _pkg="${2}" \
     _commit="${3}" \
-    _url
-  _url="https://gitlab.com/${_ns}/${_pkg}/-/archive/${_commit}/${_pkg}-${_commit}.tar.gz"
+    _url \
+    _http \
+    _repo \
+    _tarname \
+    _msg=()
+  _tarname="${_pkg}-${_commit}"
+  _http="https://gitlab.com"
+  _repo="${_http}/${_ns}/${_pkg}"
+  _url="${_repo}/-/archive/${_commit}/${_tarname}.tar.gz"
+  _msg=(
+    "Downloading '${_tarname}'"
+    "source tarball from"
+    "'${_ns}' namespace on"
+    "Gitlab.com."
+  echo \
+    "${_msg[*]}"
   _gl_dl_retrieve \
     "${_url}"
 }
@@ -181,32 +195,38 @@ _gl_dl_retrieve() {
     _token_private \
     _token \
     _curl_opts=() \
-    _output_file
+    _output_file \
+    _msg=()
   _output_file="${HOME}/$( \
     basename \
       "${_url#https://}")"
   _token_private="${HOME}/.config/gitlab.com/default.txt"
   if [[ ! -e "${_token_private}" ]]; then
+    _msg=(
+      "Missing private token at"
+      "'${_token_private}'."
+    )
     echo \
-      "Missing private token at '${HOME}/.config/gitlab.com/default.txt'."
-    echo \
-      "Set the GL_DL_PRIVATE_TOKEN variable in your Gitlab.com" \
+      "${_msg[*]}"
+    _msg=(
+      "Set the 'GL_DL_PRIVATE_TOKEN'"
+      "variable in your Gitlab.com" \
       "CI namespace configuration."
-    
+    )
+    echo \
+      "${_msg[*]}"
   fi
   _token="PRIVATE-TOKEN: $( \
     cat \
       "${_token_private}")"
   _curl_opts+=(
     --silent
-    --location
+    -L
     --header
       "${_token}"
     -o 
       "${_output_file}"
   )
-  echo \
-    "${_url_opts[@]}"
   curl \
     "${_curl_opts[@]}" \
     "${_url}"
