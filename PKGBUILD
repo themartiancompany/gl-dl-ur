@@ -146,7 +146,6 @@ elif [[ "${_evmfs}" == "false" ]]; then
         _uri="${_url}/-/archive/${_commit}/${_tarname}.${_archive_format}"
       fi
       _src="${_tarname}.${_archive_format}::${_uri}"
-      _sum="${_archive_sum}"
     fi
   fi
 fi
