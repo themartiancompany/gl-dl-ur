@@ -57,8 +57,8 @@ _hardhat="true"
 _py="python"
 _pkg=gl-dl
 pkgname="${_pkg}"
-pkgver="0.0.0.0.0.0.0.0.0.0.0.0.1.1.1.1.1"
-_commit="9a60ee828f9a741fe0c829ca527bd83ab06d3ecb"
+pkgver="0.0.0.0.0.0.0.0.0.0.0.0.1.1.1.1.1.1"
+_commit="e946436f91efe6cd0b151fa8d20ef83e66dc1952"
 pkgrel=1
 _pkgdesc=(
   "Downloads a resource from a GitLab instance"
@@ -105,27 +105,27 @@ _tarname="${pkgname}-${_tag}"
 if [[ "${_offline}" == "true" ]]; then
   _url="file://${HOME}/${pkgname}"
 fi
-_archive_sum="c8b243d977bd39ef3350a06ce953ddddd4c023d4a6b8ff961362a81c2ae7a3b2"
-_archive_sig_sum="6a4f0c63d04896489e10e405c492e81eb09a013bbdf788d906b38e9c3bad1e41"
+_sum="ab493bc530fd1f7732b238c8c4cf17b3746ead83428a2489829f4d7152c53b8d"
+_sig_sum="55999629d7544bf9bb71e129842a0c3537f1c7a7d088c37402c735cbf0758ff5"
 _evmfs_network="100"
 _evmfs_address="0x69470b18f8b8b5f92b48f6199dcb147b4be96571"
 _evmfs_ns="0x87003Bd6C074C713783df04f36517451fF34CBEf"
-_evmfs_archive_uri="evmfs://${_evmfs_network}/${_evmfs_address}/${_evmfs_ns}/${_archive_sum}"
-_evmfs_archive_src="${_tarname}.tar.gz::${_evmfs_archive_uri}"
-_archive_sig_uri="evmfs://${_evmfs_network}/${_evmfs_address}/${_evmfs_ns}/${_archive_sig_sum}"
-_archive_sig_src="${_tarname}.tar.gz.sig::${_archive_sig_uri}"
+_evmfs_uri="evmfs://${_evmfs_network}/${_evmfs_address}/${_evmfs_ns}/${_sum}"
+_evmfs_src="${_tarname}.tar.gz::${_evmfs_uri}"
+_sig_uri="evmfs://${_evmfs_network}/${_evmfs_address}/${_evmfs_ns}/${_sig_sum}"
+_sig_src="${_tarname}.tar.gz.sig::${_sig_uri}"
 if [[ "${_evmfs}" == "true" ]]; then
   if [[ "${_git}" == "false" ]]; then
     makedepends+=(
       "evmfs"
     )
-    _src="${_evmfs_archive_src}"
-    _sum="${_archive_sum}"
+    _src="${_evmfs_src}"
+    _sum="${_sum}"
     source+=(
-      "${_archive_sig_src}"
+      "${_sig_src}"
     )
     sha256sums+=(
-      "${_archive_sig_sum}"
+      "${_sig_sum}"
     )
   fi
 elif [[ "${_evmfs}" == "false" ]]; then
@@ -156,7 +156,6 @@ source=(
 sha256sums=(
   "${_sum}"
 )
-
 validpgpkeys=(
   # Truocolo
   #   <truocolo@aol.com>
