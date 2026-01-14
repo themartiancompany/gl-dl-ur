@@ -27,7 +27,7 @@
 #     <pellegrinoprevete@gmail.com>
 #     <dvorak@0x87003Bd6C074C713783df04f36517451fF34CBEf>
 
-_evmfs_available="$( \
+_evmfs_available="$(
   command \
     -v \
     "evmfs" || \
@@ -42,7 +42,7 @@ fi
 if [[ ! -v "_git_http_host" ]]; then
   _git_http_host="gitlab"
 fi
-_os="$( \
+_os="$(
   uname \
     -o)"
 _offline="false"
@@ -59,7 +59,7 @@ _pkg=gl-dl
 pkgname="${_pkg}"
 pkgver="0.0.0.0.0.0.0.0.0.0.0.0.1.1.1.1.1.1"
 _commit="e946436f91efe6cd0b151fa8d20ef83e66dc1952"
-pkgrel=3
+pkgrel=4
 _pkgdesc=(
   "Downloads a resource from a GitLab instance"
   "using an authentication token if present."
