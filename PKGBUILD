@@ -31,6 +31,9 @@
 #     <pellegrinoprevete@gmail.com>
 #     <dvorak@0x87003Bd6C074C713783df04f36517451fF34CBEf>
 
+_os="$(
+  uname \
+    -o)"
 _evmfs_available="$(
   command \
     -v \
@@ -43,18 +46,35 @@ if [[ ! -v "_evmfs" ]]; then
     _evmfs="false"
   fi
 fi
-if [[ ! -v "_git_http_host" ]]; then
+if [[ ! -v "_offline" ]]; then
+  _offline="false"
+fi
+if [[ ! -v "_git" ]]; then
+  _git="false"
+fi
+if [[ ! -v "_git_service" ]]; then
+  _git_service="github"
   _git_http_host="gitlab"
 fi
-_os="$(
-  uname \
-    -o)"
-_offline="false"
-_git="false"
-if [[ "${_git_http_host}" == "github" ]]; then
-  _archive_format="zip"
-elif [[ "${_git_http_host}" == "gitlab" ]]; then
-  _archive_format="tar.gz"
+if [[ ! -v "_git_http_host" ]]; then
+  _git_http_host="${_git_service}"
+fi
+if [[ ! -v "_ns" ]]; then
+  _ns="themartiancompany"
+fi
+if [[ ! -v "_tag_name" ]]; then
+  _tag_name="commit"
+fi
+if [[ ! -v "_archive_format" ]]; then
+  if [[ "${_git}" == "false" ]]; then
+    if [[ "${_git_service}" == "github" ]]; then
+      if [[ "${_tag_name}" == "commit" ]]; then
+        _archive_format="zip"
+      elif [[ "${_tag_name}" == "pkgver" ]]; then
+        _archive_format="tar.gz"
+      fi
+    fi
+  fi
 fi
 _solc="true"
 _hardhat="true"
@@ -63,7 +83,7 @@ _pkg=gl-dl
 pkgname="${_pkg}"
 pkgver="0.0.0.0.0.0.0.0.0.0.0.0.1.1.1.1.1.1"
 _commit="e946436f91efe6cd0b151fa8d20ef83e66dc1952"
-pkgrel=9
+pkgrel=10
 _pkgdesc=(
   "Downloads a resource from a GitLab instance"
   "using an authentication token if present."
@@ -99,6 +119,16 @@ makedepends=(
   'make'
   "${_py}-docutils"
 )
+if [[ "${_git}" == "true" ]]; then
+  makedepends+=(
+    "git"
+  )
+fi
+if [[ "${_evmfs}" == "true" ]]; then
+  makedepends+=(
+    "evmfs"
+  )
+fi
 checkdepends=(
   "shellcheck"
 )
@@ -109,8 +139,17 @@ _tarname="${pkgname}-${_tag}"
 if [[ "${_offline}" == "true" ]]; then
   _url="file://${HOME}/${pkgname}"
 fi
-_sum="ab493bc530fd1f7732b238c8c4cf17b3746ead83428a2489829f4d7152c53b8d"
-_sig_sum="55999629d7544bf9bb71e129842a0c3537f1c7a7d088c37402c735cbf0758ff5"
+_gitlab_sum="ab493bc530fd1f7732b238c8c4cf17b3746ead83428a2489829f4d7152c53b8d"
+_gitlab_sig_sum="55999629d7544bf9bb71e129842a0c3537f1c7a7d088c37402c735cbf0758ff5"
+_github_sum="ab493bc530fd1f7732b238c8c4cf17b3746ead83428a2489829f4d7152c53b8d"
+_github_sig_sum="55999629d7544bf9bb71e129842a0c3537f1c7a7d088c37402c735cbf0758ff5"
+if [[ "${_git_service}" == "gitlab" ]]; then
+  _sum="${_gitlab_sum}"
+  _sig_sum="${_gitlab_sig_sum}"
+elif [[ "${_git_service}" == "github" ]]; then
+  _sum="${_github_sum}"
+  _sig_sum="${_github_sig_sum}"
+fi
 _evmfs_network="100"
 _evmfs_address="0x69470b18f8b8b5f92b48f6199dcb147b4be96571"
 _evmfs_ns="0x87003Bd6C074C713783df04f36517451fF34CBEf"
@@ -119,10 +158,12 @@ _evmfs_src="${_tarname}.tar.gz::${_evmfs_uri}"
 _sig_uri="evmfs://${_evmfs_network}/${_evmfs_address}/${_evmfs_ns}/${_sig_sum}"
 _sig_src="${_tarname}.tar.gz.sig::${_sig_uri}"
 if [[ "${_evmfs}" == "true" ]]; then
-  if [[ "${_git}" == "false" ]]; then
-    makedepends+=(
-      "evmfs"
-    )
+  if [[ "${_git}" == "true" ]]; then
+    echo \
+      "ahah"
+    exit \
+      1
+  elif [[ "${_git}" == "false" ]]; then
     _src="${_evmfs_src}"
     _sum="${_sum}"
     source+=(
@@ -134,9 +175,6 @@ if [[ "${_evmfs}" == "true" ]]; then
   fi
 elif [[ "${_evmfs}" == "false" ]]; then
   if [[ "${_git}" == true ]]; then
-    makedepends+=(
-      "git"
-    )
     _src="${_tarname}::git+${_url}#${_tag_name}=${_tag}?signed"
     _sum="SKIP"
   elif [[ "${_git}" == false ]]; then
@@ -178,11 +216,16 @@ check() {
 }
 
 package() {
+  local \
+    _make_opts=()
+  _make_opts+=(
+    PREFIX="/usr"
+    DESTDIR="${pkgdir}"
+  )
   cd \
     "${_tarname}"
   make \
-    PREFIX="/usr" \
-    DESTDIR="${pkgdir}" \
+    "${_make_opts[@]}" \
     install
   install \
     -Dm644 \
