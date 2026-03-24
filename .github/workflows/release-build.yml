@@ -866,21 +866,25 @@ jobs:
         run: |
           # export \
           #   PKGEXT=".pkg.tar.xz"
+          /entrypoint.sh \
+            TERMUX_VERSION=50 \
+            _evmfs="false" \
+            arch="${_arch}" \
+            _git_service="github" \
+            recipe-get \
+              -v \
+              "PKGBUILD" \
+              "source"
           export \
             _pkgbase="$( \
               /entrypoint.sh \
                 recipe-get \
                   "PKGBUILD" \
-                  "pkgbase")"
-          _pkgbase="$( \
-            /entrypoint.sh \
-              recipe-get \
-                "PKGBUILD" \
-                "pkgbase")" && \
+                  "pkgbase")" && \
           /entrypoint.sh \
             mkdir \
               -p \
-              "${HOME}/${_pkgbase}-build" && \
+              "${HOME}/${_pkgbase}-build"
           _arch="$( \
             uname \
               -m)" && \
@@ -890,9 +894,9 @@ jobs:
             true; \
           fi && \
           /entrypoint.sh \
+            TERMUX_VERSION=50 \
             _evmfs="false" \
             arch="${_arch}" \
-            TERMUX_VERSION=50 \
             _git_service="github" \
             reallymakepkg \
               -v \

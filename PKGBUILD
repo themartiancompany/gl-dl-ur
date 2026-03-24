@@ -66,13 +66,23 @@ if [[ ! -v "_tag_name" ]]; then
   _tag_name="commit"
 fi
 if [[ ! -v "_archive_format" ]]; then
-  if [[ "${_git}" == "false" ]]; then
+  if [[ "${_git}" == "true" ]]; then
+    if [[ "${_evmfs}" == "true" ]]; then
+      _archive_format="bundle"
+    elif [[ "${_evmfs}" == "false" ]]; then
+      _archive_format="git"
+    fi
+  elif [[ "${_git}" == "false" ]]; then
     if [[ "${_git_service}" == "github" ]]; then
       if [[ "${_tag_name}" == "commit" ]]; then
         _archive_format="zip"
       elif [[ "${_tag_name}" == "pkgver" ]]; then
         _archive_format="tar.gz"
       fi
+    elif [[ "${_git_service}" == "gitlab" ]]; then
+      _archive_format="tar.gz"
+    else
+      _archive_format="tar.gz"
     fi
   fi
 fi
@@ -83,7 +93,7 @@ _pkg=gl-dl
 pkgname="${_pkg}"
 pkgver="0.0.0.0.0.0.0.0.0.0.0.0.1.1.1.1.1.1"
 _commit="e946436f91efe6cd0b151fa8d20ef83e66dc1952"
-pkgrel=19
+pkgrel=20
 _pkgdesc=(
   "Downloads a resource from a GitLab instance"
   "using an authentication token if present."
